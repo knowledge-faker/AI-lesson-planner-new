@@ -1,0 +1,96 @@
+
+/* 保持背景色一致 */
+.page.data-v-d7449692 { 
+  min-height: 100vh; 
+  background-color: #F8F9FB; 
+  padding: 20px; 
+  padding-bottom: 120rpx;
+  box-sizing: border-box;
+}
+.header.data-v-d7449692 { margin-bottom: 20px; margin-top: 10px;
+}
+.title.data-v-d7449692 { font-size: 24px; font-weight: bold; color: #333;
+}
+
+/* 卡片样式：保持跟首页、VIP页完全一致 */
+.card.data-v-d7449692 { 
+  background: #ffffff; 
+  border-radius: 16px; 
+  padding: 25px; 
+  box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+}
+.form-title.data-v-d7449692 { font-size: 18px; font-weight: bold; margin-bottom: 25px; color: #333;
+}
+
+/* 输入组样式 */
+.input-group.data-v-d7449692 { margin-bottom: 20px;
+}
+.label.data-v-d7449692 { font-size: 14px; font-weight: bold; color: #444; margin-bottom: 10px; display: block;
+}
+
+/* 选择框和输入框样式统一 */
+.input.data-v-d7449692, .picker-box.data-v-d7449692 {
+  width: 100%; 
+  height: 50px; 
+  background: #FDFDFD;
+  border: 1px solid #E0E0E0; 
+  border-radius: 10px; 
+  padding: 0 15px;
+  box-sizing: border-box; 
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.placeholder.data-v-d7449692 { color: #CCC;
+}
+.value.data-v-d7449692 { color: #333;
+}
+.arrow.data-v-d7449692 { color: #BBB; font-size: 12px;
+}
+
+/* 按钮样式：使用招牌紫色 #5C6AC4 */
+.submit-btn.data-v-d7449692 {
+  background: #5C6AC4;
+  color: #fff; 
+  border-radius: 10px; 
+  height: 52px; 
+  line-height: 52px;
+  font-size: 16px; 
+  font-weight: bold; 
+  margin-top: 30px; 
+  border: none;
+  box-shadow: 0 4px 12px rgba(92, 106, 196, 0.3);
+}
+.submit-btn.data-v-d7449692:active { transform: scale(0.98); opacity: 0.9;
+}
+
+/* 预览区样式 */
+.result-preview.data-v-d7449692 {
+  margin-top: 30px; 
+  background: #F0F4F8; 
+  padding: 20px; 
+  border-radius: 12px;
+}
+.preview-title.data-v-d7449692 { font-size: 14px; font-weight: bold; color: #333; margin-bottom: 10px;
+}
+.preview-item.data-v-d7449692 { font-size: 13px; color: #666; line-height: 2;
+}
+
+/* 底部导航栏（固定样式） */
+.footer-tabbar.data-v-d7449692 {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100rpx;
+  background-color: #5C6AC4;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 999;
+}
+.tab-item.data-v-d7449692 { color: #FFFFFF; font-size: 28rpx; flex: 1; text-align: center; opacity: 0.7;
+}
+.tab-item.active.data-v-d7449692 { opacity: 1; font-weight: bold;
+}

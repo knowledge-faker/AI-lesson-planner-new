@@ -1,0 +1,15 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/prepare/prepare",
+    "pages/vip/vip",
+    "pages/mine/mine"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "AI备课",
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "backgroundColor": "#F8F9FB"
+  },
+  "usingComponents": {}
+}

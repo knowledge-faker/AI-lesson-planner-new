@@ -1,0 +1,137 @@
+
+.page.data-v-7c2ebfa5 {
+		min-height: 100vh;
+		background-color: #F5F7FA;
+		padding: 20px;
+		padding-bottom: 140rpx;
+}
+.header-title.data-v-7c2ebfa5 {
+		font-size: 24px;
+		font-weight: bold;
+		color: #333;
+		margin-bottom: 20px;
+}
+.user-card.data-v-7c2ebfa5 {
+		background: #fff;
+		border-radius: 12px;
+		padding: 25px;
+		margin-bottom: 20px;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+.info-row.data-v-7c2ebfa5 {
+		display: flex;
+		align-items: center;
+		margin-bottom: 15px;
+}
+.label.data-v-7c2ebfa5 {
+		width: 160rpx;
+		font-size: 16px;
+		color: #666;
+		font-weight: bold;
+}
+.value.data-v-7c2ebfa5 {
+		font-size: 16px;
+		color: #333;
+}
+.value-sm.data-v-7c2ebfa5 { font-size: 14px; color: #999;
+}
+.tag-vip.data-v-7c2ebfa5 {
+		background: #F5F5F5;
+		color: #999;
+		padding: 4rpx 20rpx;
+		border-radius: 6rpx;
+		font-size: 14px;
+}
+.tag-vip.active.data-v-7c2ebfa5 {
+		background: #FFF3E0;
+		color: #FF9800;
+}
+.btn-row.data-v-7c2ebfa5 {
+		display: flex;
+		gap: 15px;
+		margin-top: 25px;
+}
+.btn-upgrade.data-v-7c2ebfa5 {
+		flex: 1;
+		background: #5C6AC4;
+		color: #fff;
+		border: none;
+		height: 40px;
+		line-height: 40px;
+		border-radius: 6px;
+		font-size: 15px;
+}
+.btn-logout.data-v-7c2ebfa5 {
+		flex: 1;
+		background: #F5F5F5;
+		color: #333;
+		border: none;
+		height: 40px;
+		line-height: 40px;
+		border-radius: 6px;
+		font-size: 15px;
+}
+.section-title.data-v-7c2ebfa5 {
+		font-size: 18px;
+		font-weight: bold;
+		color: #333;
+		margin-bottom: 15px;
+}
+.stats-grid.data-v-7c2ebfa5 {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 15px;
+		margin-bottom: 30px;
+}
+.stat-item.data-v-7c2ebfa5 {
+		background: #fff;
+		padding: 20px;
+		border-radius: 8px;
+		text-align: center;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+.stat-label.data-v-7c2ebfa5 {
+		font-size: 13px;
+		color: #666;
+		margin-bottom: 5px;
+}
+.stat-num.data-v-7c2ebfa5 {
+		font-size: 24px;
+		font-weight: bold;
+		color: #5C6AC4;
+}
+.history-btn.data-v-7c2ebfa5 {
+		width: 100%;
+		height: 44px;
+		line-height: 44px;
+		background: #EEE;
+		color: #333;
+		border: none;
+		border-radius: 6px;
+		font-size: 15px;
+}
+
+	/* 底部栏样式 */
+.footer-tabbar.data-v-7c2ebfa5 {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		height: 100rpx;
+		background-color: #5C6AC4;
+		display: flex;
+		justify-content: space-around;
+		align-items: center;
+		z-index: 999;
+}
+.tab-item.data-v-7c2ebfa5 {
+		color: #FFFFFF;
+		font-size: 28rpx;
+		flex: 1;
+		text-align: center;
+		opacity: 0.7;
+}
+.tab-item.active.data-v-7c2ebfa5 {
+		opacity: 1;
+		font-weight: bold;
+}
