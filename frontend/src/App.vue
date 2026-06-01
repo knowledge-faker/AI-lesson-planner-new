@@ -95,4 +95,8 @@ button {
   appearance: none;
   -webkit-appearance: none;
 }
+
+select {
+  font: inherit;
+}
 </style>

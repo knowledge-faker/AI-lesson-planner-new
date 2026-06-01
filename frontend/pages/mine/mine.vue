@@ -64,8 +64,9 @@
 <script setup>
 	import { ref } from 'vue';
 	import { onMounted } from 'vue';
+	import { API_BASE } from '../../src/apiBase.js';
 	import { apiRequest } from '../../src/http.js';
-	import { clearAuth } from '../../src/auth.js';
+	import { clearAuth, getToken } from '../../src/auth.js';
 
 	const userInfo = ref({
 		nickname: '加载中...',
@@ -74,18 +75,62 @@
 		stats: { total: 0, lesson: 0, quiz: 0, html: 0 }
 	});
 
-	onMounted(async () => {
-		try {
-			const res = await apiRequest({ url: '/api/user/info', method: 'GET' });
-			if (res.statusCode === 200 && res.data?.code === 200) {
-				const data = res.data.data;
-				userInfo.value = data;
-				if (data.vip_expiry) {
-					userInfo.value.vip_expiry_str = data.vip_expiry.split('T')[0];
-				}
+	function payReturnOrderNo() {
+		if (typeof window === 'undefined') return null;
+		const hash = window.location.hash || '';
+		const hi = hash.indexOf('?');
+		const fromHash = hi === -1 ? '' : hash.slice(hi + 1);
+		const fromSearch = (window.location.search || '').replace(/^\?/, '');
+		const merged = [fromHash, fromSearch].filter(Boolean).join('&');
+		if (!merged) return null;
+		const q = Object.fromEntries(new URLSearchParams(merged));
+		return q.out_trade_no || q.order_no || null;
+	}
+
+	async function loadUserInfo() {
+		const res = await apiRequest({ url: '/api/user/info', method: 'GET' });
+		if (res.statusCode === 200 && res.data?.code === 200) {
+			const data = res.data.data;
+			userInfo.value = {
+				nickname: data.nickname,
+				is_vip: data.is_vip,
+				vip_expiry_str: data.vip_expiry ? data.vip_expiry.split('T')[0] : '',
+				stats: data.stats || { total: 0, lesson: 0, quiz: 0, html: 0 },
+			};
+		}
+	}
+
+	async function reconcilePayOrder(orderNo) {
+		// 支付回跳常无 TOKEN：用公开 order_result 向支付宝查单并履约
+		if (getToken()) {
+			try {
+				await apiRequest({
+					url: `/api/pay/sync/${encodeURIComponent(orderNo)}`,
+					method: 'POST',
+				});
+			} catch (_) {
+				/* ignore */
 			}
+			return;
+		}
+		try {
+			await fetch(`${API_BASE}/api/pay/order_result/${encodeURIComponent(orderNo)}`);
 		} catch (_) {
-			uni.showToast({ title: '无法连接到服务器', icon: 'none' });
+			/* ignore */
+		}
+	}
+
+	onMounted(async () => {
+		const orderNo = payReturnOrderNo();
+		if (orderNo) {
+			await reconcilePayOrder(orderNo);
+		}
+		try {
+			await loadUserInfo();
+		} catch (_) {
+			if (getToken()) {
+				uni.showToast({ title: '无法连接到服务器', icon: 'none' });
+			}
 		}
 	});
 

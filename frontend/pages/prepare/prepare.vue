@@ -9,26 +9,22 @@
     <view class="card">
       <view class="form-title">AI 全能备课助手</view>
       
-      <!-- 1. 学段选择 -->
+      <!-- 1. 学段选择（H5 用原生 select；uni 小程序仍可用下方 picker 分支） -->
       <view class="input-group">
         <view class="label">所属学段</view>
-        <picker mode="selector" :range="grades" @change="onGradeChange">
-          <view class="picker-box">
-            <text :class="grade ? 'value' : 'placeholder'">{{ grade || '点击选择（小学/初中/高中）' }}</text>
-            <text class="arrow">▼</text>
-          </view>
-        </picker>
+        <select v-model="grade" class="picker-box select-native">
+          <option value="" disabled>点击选择（小学/初中/高中）</option>
+          <option v-for="g in grades" :key="g" :value="g">{{ g }}</option>
+        </select>
       </view>
 
       <!-- 2. 学科选择 -->
       <view class="input-group">
         <view class="label">教学学科</view>
-        <picker mode="selector" :range="subjects" @change="onSubjectChange">
-          <view class="picker-box">
-            <text :class="subject ? 'value' : 'placeholder'">{{ subject || '点击选择学科（语数外等）' }}</text>
-            <text class="arrow">▼</text>
-          </view>
-        </picker>
+        <select v-model="subject" class="picker-box select-native">
+          <option value="" disabled>点击选择学科（语数外等）</option>
+          <option v-for="s in subjects" :key="s" :value="s">{{ s }}</option>
+        </select>
       </view>
 
       <!-- 3. 课题名称 -->
@@ -75,9 +71,6 @@ const subject = ref('');
 
 const grades = ['小学', '初中', '高中'];
 const subjects = ['语文', '数学', '英语', '物理', '化学', '生物', '历史', '地理', '政治'];
-
-const onGradeChange = (e) => { grade.value = grades[e.detail.value]; };
-const onSubjectChange = (e) => { subject.value = subjects[e.detail.value]; };
 
 const navTo = (name) => {
   uni.reLaunch({ url: `/pages/${name}/${name}` });
@@ -189,9 +182,24 @@ const doGenerate = async () => {
   justify-content: space-between;
 }
 
-.placeholder { color: #CCC; }
-.value { color: #333; }
-.arrow { color: #BBB; font-size: 12px; }
+/* 原生下拉（H5 / 浏览器） */
+.select-native {
+  cursor: pointer;
+  color: #333;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23BBB' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+}
+.select-native:invalid,
+.select-native option[value=""] {
+  color: #ccc;
+}
+.select-native option:not([value=""]) {
+  color: #333;
+}
 
 /* 按钮样式：使用招牌紫色 #5C6AC4 */
 .submit-btn {

@@ -4,10 +4,10 @@
     <div v-if="payReturnBanner" class="pay-return-banner">
       <template v-if="payReturnState === 'polling'">正在确认支付结果…</template>
       <template v-else-if="payReturnState === 'success'">
-        支付已成功，权益可能稍有延迟；请登录后在「我的」查看 VIP。
+        支付已确认，VIP 已开通。请用购买时的账号登录，在「我的」查看。
       </template>
       <template v-else-if="payReturnState === 'pending'">
-        若已付款，服务器回调稍有延迟；请稍后登录「我的」刷新。
+        若已付款仍未开通，请用购买时的账号登录后打开「我的」或本页再试。
       </template>
       <text class="banner-login" @click="goLogin">去登录</text>
     </div>
@@ -17,17 +17,6 @@
       <div class="subtitle">购买VIP，享受无限生成备课内容的特权</div>
     </div>
 
-    <!-- 支付联调：0.01 元，订单生效后为 +1 天 VIP -->
-    <div class="vip-card test-pack">
-      <div class="card-title">支付联调（测试）</div>
-      <div class="card-price test-price">¥0.01 <span class="days">/ 验证收款流程</span></div>
-      <div class="features">
-        <div class="f-item">✓ 支付宝最小金额，用于沙箱或正式联调</div>
-        <div class="f-item">✓ 支付成功后延长 1 天 VIP</div>
-      </div>
-      <p class="test-pack-hint">线上默认关闭；服务器需在 <code>.env.prod</code> 设置 <code>VIP_TEST_PENNY_ENABLED=1</code> 后本入口才可用。</p>
-      <button type="button" class="buy-btn test-buy-btn" @click="openPayMenu(1, true)">测试支付 ¥0.01</button>
-    </div>
 
     <!-- 7天VIP -->
     <div class="vip-card">
@@ -70,7 +59,8 @@
             v-for="item in paymentOptions"
             :key="item.value"
             class="pay-method-item"
-            @click="selectedPayMode = item.value"
+            :class="{ disabled: item.disabled }"
+            @click="selectPayMode(item)"
           >
             <div class="method-left">
               <div class="method-icon" :class="item.iconClass">{{ item.icon }}</div>
@@ -79,7 +69,12 @@
                 <div class="method-desc">{{ item.desc }}</div>
               </div>
             </div>
-            <div class="radio-dot" :class="{ checked: selectedPayMode === item.value }"></div>
+            <div
+              v-if="!item.disabled"
+              class="radio-dot"
+              :class="{ checked: selectedPayMode === item.value }"
+            ></div>
+            <span v-else class="method-tag">暂未开放</span>
           </div>
         </div>
         <button class="confirm-pay-btn" @click="confirmPay">确认支付</button>
@@ -141,12 +136,33 @@ const goLogin = () => {
   uni.reLaunch({ url: '/pages/login/login' })
 }
 
-onMounted(async () => {
-  const q = parsePayReturnQuery()
-  const orderNo = q.out_trade_no || q.order_no
-  if (!orderNo || getToken()) return
-  payReturnBanner.value = true
-  payReturnState.value = 'polling'
+async function confirmPayOrder(orderNo) {
+  if (!orderNo) return false
+  if (getToken()) {
+    try {
+      await apiRequest({
+        url: `/api/pay/sync/${encodeURIComponent(orderNo)}`,
+        method: 'POST',
+      })
+    } catch (_) {
+      /* 同步失败时仍轮询订单状态 */
+    }
+    for (let i = 0; i < 15; i++) {
+      try {
+        const r = await apiRequest({
+          url: `/api/pay/status/${encodeURIComponent(orderNo)}`,
+          method: 'GET',
+        })
+        if (r.statusCode === 200 && r.data?.code === 200 && r.data.data?.status === 'SUCCESS') {
+          return true
+        }
+      } catch (_) {
+        /* ignore */
+      }
+      await new Promise((res) => setTimeout(res, 1000))
+    }
+    return false
+  }
   for (let i = 0; i < 20; i++) {
     try {
       const r = await fetch(
@@ -154,22 +170,39 @@ onMounted(async () => {
       )
       const j = await r.json()
       if (j.code === 200 && j.data?.status === 'SUCCESS') {
-        payReturnState.value = 'success'
-        return
+        return true
       }
     } catch (_) {
       /* ignore */
     }
     await new Promise((res) => setTimeout(res, 1000))
   }
-  payReturnState.value = 'pending'
+  return false
+}
+
+onMounted(async () => {
+  const q = parsePayReturnQuery()
+  const orderNo = q.out_trade_no || q.order_no
+  if (!orderNo) return
+  payReturnBanner.value = true
+  payReturnState.value = 'polling'
+  const ok = await confirmPayOrder(orderNo)
+  payReturnState.value = ok ? 'success' : 'pending'
+  if (ok) {
+    uni.showToast({ title: 'VIP已开通，请登录查看', icon: 'success' })
+  }
 })
 
 const paymentOptions = [
-  { value: 'alipay', label: '支付宝支付', desc: '电脑网站支付（跳转收银台，可扫码）', icon: '支', iconClass: 'alipay' },
-  { value: 'wxpay', label: '微信支付', desc: '可在微信环境内拉起支付', icon: '微', iconClass: 'wxpay' },
-  { value: 'h5', label: '手机直接打开', desc: '直接跳转到支付链接', icon: '开', iconClass: 'h5' }
+  { value: 'alipay', label: '支付宝支付', desc: '电脑网站支付（跳转收银台，可扫码）', icon: '支', iconClass: 'alipay', disabled: false },
+  { value: 'wxpay', label: '微信支付', desc: '暂未开放', icon: '微', iconClass: 'wxpay', disabled: true },
+  { value: 'h5', label: '手机直接打开', desc: '暂未开放', icon: '开', iconClass: 'h5', disabled: true },
 ]
+
+const selectPayMode = (item) => {
+  if (item.disabled) return
+  selectedPayMode.value = item.value
+}
 
 // 1. 打开支付选择菜单（testPenny：0.01 元测试单，见后端 test_penny）
 const openPayMenu = (days, testPenny = false) => {
@@ -441,6 +474,26 @@ const navTo = (page) => {
 }
 
 .pay-method-item:last-child { border-bottom: none; }
+
+.pay-method-item.disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: #f7f7f7;
+}
+
+.pay-method-item.disabled .method-name,
+.pay-method-item.disabled .method-desc {
+  color: #aaa;
+}
+
+.method-tag {
+  font-size: 12px;
+  color: #999;
+  padding: 2px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
 
 .method-left {
   display: flex;
