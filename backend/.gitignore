@@ -1,3 +1,5 @@
-.env
-.env.dev
-.env.prod
+# 环境变量文件
+backend/.env
+backend/.env.*
+backend/.env.prod
+backend/.env.dev
