@@ -1,0 +1,13 @@
+# Python 3.10+ 推荐
+fastapi>=0.100
+uvicorn[standard]>=0.22
+sqlalchemy>=2.0
+pymysql
+pydantic>=2
+python-docx
+openai>=1.0
+python-dotenv
+python-alipay-sdk
+pyjwt>=2.8.0
+bcrypt>=4.0.0
+cryptography>=41.0.0

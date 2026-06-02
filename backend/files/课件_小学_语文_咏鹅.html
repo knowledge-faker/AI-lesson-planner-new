@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>咏鹅 - 骆宾王</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'STKaiti', 'KaiTi', serif;
+            background: linear-gradient(135deg, #e0f7fa 0%, #80deea 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 150, 136, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        h1 {
+            color: #00796b;
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            animation: fadeInDown 1s ease-out;
+        }
+        .author {
+            color: #004d40;
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            animation: fadeIn 1.5s ease-out;
+        }
+        .poem {
+            font-size: 2.2rem;
+            line-height: 1.8;
+            color: #00695c;
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(178, 223, 219, 0.3);
+            border-radius: 15px;
+            animation: slideIn 2s ease-out;
+        }
+        .poem-line {
+            display: block;
+            margin: 15px 0;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: lineAppear 0.8s forwards;
+        }
+        .poem-line:nth-child(1) { animation-delay: 0.5s; }
+        .poem-line:nth-child(2) { animation-delay: 1s; }
+        .poem-line:nth-child(3) { animation-delay: 1.5s; }
+        .poem-line:nth-child(4) { animation-delay: 2s; }
+        .interactive-area {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .btn {
+            padding: 12px 25px;
+            font-size: 1.2rem;
+            background: #00796b;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            box-shadow: 0 5px 15px rgba(0, 121, 107, 0.4);
+        }
+        .btn:hover {
+            background: #004d40;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 77, 64, 0.5);
+        }
+        .btn:active {
+            transform: translateY(0);
+        }
+        .scene {
+            width: 100%;
+            height: 300px;
+            margin: 30px auto;
+            position: relative;
+            background: linear-gradient(to bottom, #80deea 0%, #4db6ac 100%);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 5px solid #00796b;
+        }
+        .goose {
+            position: absolute;
+            width: 120px;
+            height: 100px;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100"><path d="M60,20 Q80,0 100,20 Q120,40 100,60 Q80,80 60,60 Q40,80 20,60 Q0,40 20,20 Q40,0 60,20" fill="%23ffffff" stroke="%2300796b" stroke-width="2"/><circle cx="75" cy="30" r="5" fill="%23004d40"/><path d="M100,50 L120,40 L115,55 Z" fill="%23ff9800"/></svg>') no-repeat center;
+            background-size: contain;
+            transition: all 0.5s ease;
+            cursor: pointer;
+        }
+        .water {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 50px;
+            background: linear-gradient(to top, #00796b, #4db6ac);
+            animation: wave 3s infinite linear;
+        }
+        .info-panel {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            border-left: 5px solid #00796b;
+            text-align: left;
+            font-size: 1.1rem;
+            color: #004d40;
+            line-height: 1.6;
+            display: none;
+            animation: fadeIn 0.8s ease-out;
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes lineAppear {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes wave {
+            0% { background-position-x: 0; }
+            100% { background-position-x: 100px; }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-10px); }
+        }
+        @keyframes swim {
+            0% { left: 10%; }
+            50% { left: 70%; }
+            100% { left: 10%; }
+        }
+        .goose.float {
+            animation: float 2s infinite ease-in-out;
+        }
+        .goose.swim {
+            animation: swim 4s infinite linear;
+        }
+        @media (max-width: 600px) {
+            h1 { font-size: 2rem; }
+            .poem { font-size: 1.8rem; }
+            .scene { height: 250px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>咏鹅</h1>
+        <div class="author">唐·骆宾王</div>
+        <div class="poem">
+            <span class="poem-line">鹅，鹅，鹅，</span>
+            <span class="poem-line">曲项向天歌。</span>
+            <span class="poem-line">白毛浮绿水，</span>
+            <span class="poem-line">红掌拨清波。</span>
+        </div>
+        <div class="scene">
+            <div class="goose" id="goose"></div>
+            <div class="water"></div>
+        </div>
+        <div class="interactive-area">
+            <button class="btn" id="animateBtn">动画演示</button>
+            <button class="btn" id="infoBtn">诗词赏析</button>
+            <button class="btn" id="resetBtn">重置场景</button>
+        </div>
+        <div class="info-panel" id="infoPanel">
+            <p><strong>《咏鹅》赏析：</strong>这是唐代诗人骆宾王七岁时的作品。全诗以清新欢快的语言，抓住鹅的突出特征进行描写。首句连用三个“鹅”字，表达对鹅的喜爱；后三句描写鹅鸣叫、浮水、划波的情景，有声有色，生动形象。</p>
+            <p><strong>创作背景：</strong>相传骆宾王小时候在池塘边玩耍，看到一群白鹅在水中游弋，便即兴创作了这首脍炙人口的诗篇。</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const goose = document.getElementById('goose');
+            const animateBtn = document.getElementById('animateBtn');
+            const infoBtn = document.getElementById('infoBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const infoPanel = document.getElementById('infoPanel');
+            const poemLines = document.querySelectorAll('.poem-line');
+            let isAnimating = false;
+            
+            // 诗句逐行显示
+            poemLines.forEach(line => {
+                line.style.opacity = '1';
+                line.style.transform = 'translateY(0)';
+            });
+            
+            // 鹅的点击交互
+            goose.addEventListener('click', function() {
+                if (!isAnimating) {
+                    this.classList.add('float');
+                    setTimeout(() => {
+                        this.classList.remove('float');
+                    }, 2000);
+                    
+                    // 播放模拟鹅叫声
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    oscillator.frequency.setValueAtTime(300, audioContext.currentTime);
+                    oscillator.frequency.setValueAtTime(200, audioContext.currentTime + 0.2);
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                    oscillator.start();
+                    oscillator.stop(audioContext.currentTime + 0.5);
+                }
+            });
+            
+            // 动画演示按钮
+            animateBtn.addEventListener('click', function() {
+                if (isAnimating) return;
+                
+                isAnimating = true;
+                goose.classList.add('swim');
+                
+                // 同步高亮诗句
+                poemLines[2].style.color = '#d32f2f';
+                poemLines[3].style.color = '#d32f2f';
+                poemLines[2].style.transition = 'color 0.5s';
+                poemLines[3].style.transition = 'color 0.5s';
+                
+                setTimeout(() => {
+                    goose.classList.remove('swim');
+                    poemLines[2].style.color = '';
+                    poemLines[3].style.color = '';
+                    isAnimating = false;
+                }, 4000);
+            });
+            
+            // 诗词赏析按钮
+            infoBtn.addEventListener('click', function() {
+                if (infoPanel.style.display === 'block') {
+                    infoPanel.style.display = 'none';
+                } else {
+                    infoPanel.style.display = 'block';
+                }
+            });
+            
+            // 重置按钮
+            resetBtn.addEventListener('click', function() {
+                goose.classList.remove('float', 'swim');
+                goose.style.left = '50%';
+                goose.style.transform = 'translateX(-50%)';
+                
+                poemLines.forEach(line => {
+                    line.style.color = '';
+                });
+                
+                infoPanel.style.display = 'none';
+                isAnimating = false;
+            });
+            
+            // 初始浮动效果
+            setTimeout(() => {
+                goose.classList.add('float');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

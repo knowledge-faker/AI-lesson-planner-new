@@ -1,0 +1,21 @@
+-- 新库：直接执行用户提供的建表语句即可。
+-- 若已有旧表 users（仅 id / nickname / vip_expiry），可尝试下列扩展（注意备份）：
+
+-- ALTER TABLE users ADD COLUMN username VARCHAR(50) NULL COMMENT '登录账号' AFTER id;
+-- ALTER TABLE users ADD COLUMN password VARCHAR(100) NULL COMMENT '加密密码' AFTER username;
+-- ALTER TABLE users ADD COLUMN email VARCHAR(100) DEFAULT '' COMMENT '邮箱' AFTER nickname;
+-- ALTER TABLE users ADD COLUMN created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
+-- ALTER TABLE users ADD COLUMN updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+-- 为旧行补全 username/password 后，再 ALTER ... MODIFY username NOT NULL, password NOT NULL;
+-- 并加 UNIQUE(username)。
+
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY COMMENT '用户ID',
+    username VARCHAR(50) NOT NULL UNIQUE COMMENT '登录账号',
+    password VARCHAR(100) NOT NULL COMMENT '加密密码',
+    nickname VARCHAR(50) DEFAULT '' COMMENT '昵称',
+    email VARCHAR(100) DEFAULT '' COMMENT '邮箱',
+    vip_expiry DATETIME NULL COMMENT 'VIP过期时间',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
